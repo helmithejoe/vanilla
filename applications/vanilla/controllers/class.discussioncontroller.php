@@ -296,7 +296,7 @@ class DiscussionController extends VanillaController {
 
         // Check permissions.
         $this->permission('Vanilla.Discussions.View', true, 'Category', $this->Discussion->PermissionCategoryID);
-        $this->setData('CategoryID', $this->CategoryID = $this->Discussion->CategoryID, true);
+        $this->setData('CategoryID', $this->data('Discussion.CategoryID'), true);
 
         // Get the comments.
         $Comments = $this->CommentModel->getNew($DiscussionID, $LastCommentID)->result();
@@ -306,8 +306,9 @@ class DiscussionController extends VanillaController {
         if (count($Comments) > 0) {
             $LastComment = $Comments[count($Comments) - 1];
             // Mark the comment read.
-            $this->setData('Offset', $this->Discussion->CountComments, true);
-            $this->CommentModel->setWatch($this->Discussion, $this->Discussion->CountComments, $this->Discussion->CountComments, $this->Discussion->CountComments);
+            $count = $this->data('Discussion.CountComments');
+            $this->setData('Offset', $count, true);
+            $this->CommentModel->setWatch($this->data('Discussion'), $count, $count, $count);
 
             $LastCommentID = $this->json('LastCommentID');
             if (is_null($LastCommentID) || $LastComment->CommentID > $LastCommentID) {
